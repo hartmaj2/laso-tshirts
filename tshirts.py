@@ -112,25 +112,27 @@ def najdi_zlepsujici_cestu():
     fronta = deque()
     for volny in vrat_seznam_volnych():
         fronta.append(volny)
+        navstiveni_v_bfs[volny] = True
         predchudci[volny] = None
     
     #vypis_frontu(fronta)
     volny_nalezen = False # pokud jsme nasli cestu koncici volnym trickem, tak uz nepridavame dalsi vrcholy do fronty, ale jeste ji doprohlizime
     
     # dokud fronta neni prazdna tak pomoci bfs hledam cesty do volnych tricek
-    while fronta.count() != 0:
-        aktualni = fronta.popleft()
-        navstiveni_v_bfs[aktualni] = True
-        
+    while len(fronta) != 0:
+        aktualni = fronta.popleft()  
         # pro kazdeho souseda se koukneme, pokud po nem muzeme jit (tzn. ze uz neni v aktualnim parovani)
         for soused in sousede[aktualni]:
             if partner[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
                 predchudci[soused] = aktualni # nastavim, ze jsem predchudce souseda na ktereho prave koukam
+                navstiveni_v_bfs[soused] = True
                 if partner[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
                     volny_nalezen = True
+                    volna_tricka.append(soused)
                 if not volny_nalezen:
                     fronta.append(soused)
-                
+
+    print(f"Volna tricka: {volna_tricka}")       
 
 nacti_vstup()
 vypis_graf()
