@@ -108,13 +108,22 @@ def vytvor_seznam_predchudcu():
         predchudci.append(None)
     return predchudci
 
+# Funguje jako dfs ale vrati true, kdyz se vracim z cesty, kde jsem nasel volne tricko
+# def dfs_se_signalem(vrchol, navstivene_dfs,volne_tricka):
+#     global sousede
+#     nasel_volne = volne_tricka[vrchol]
+#     navstivene_dfs[vrchol] = True
+#     for soused in soused[vrchol]:
+#         if not navstivene_dfs[soused]:
+#             if dfs_se_signalem(vrchol,navstivene_dfs):
+
 
 def vytvor_alternujici_strom_nasledniku(partneri):
 
-    navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
+    navstiveni_v_bfs = vytvor_seznam_false_booleanu()
     naslednici = vytvor_seznam_nasledniku()
     predchudci = vytvor_seznam_predchudcu()
-    volna_tricka = []
+    indexy_volnych_tricek = []
 
     fronta = deque()
     for volny in vrat_seznam_volnych():
@@ -135,28 +144,39 @@ def vytvor_alternujici_strom_nasledniku(partneri):
                 navstiveni_v_bfs[soused] = True
                 if partneri[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
                     volny_nalezen = True
-                    volna_tricka.append(soused)
+                    indexy_volnych_tricek.append(soused)
                 if not volny_nalezen:
                     fronta.append(soused)
 
+    volna_tricka = vytvor_seznam_false_booleanu()
+    for index_volneho in indexy_volnych_tricek:
+        volna_tricka[index_volneho] = True
+
     return volna_tricka, naslednici, predchudci
 
-def vytvor_nova_parovani(volna_tricka, naslednici, partneri):
-    novi_partneri = vytvor_prazdne_partnery()
-    pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()
+# def vytvor_nova_parovani(volna_tricka, naslednici, predchudci, partneri):
+#     novi_partneri = vytvor_prazdne_partnery()
+#     pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()
+
+#     #TODO z kazdeho volneho clovicka najit jednu zlepsujici cestu pokud to jde
+
+#     navstiveni_v_dfs = vytvor_seznam_false_booleanu()
+
+#     for volny in vrat_seznam_volnych():
+
 
     #pristi_cesta_je_parova = True # alternuje mezi 
 
     # pro kazde volne tricko chceme zkusit pridat celou jeho cestu do parovani
-    for volne_tricko in volna_tricka: 
-        aktualni = volne_tricko
-        predchudce = naslednici[aktualni]
-        while predchudce != None:
-            if predchudce < lidi_celkem: # predchudce je clovek, takze toto bude nova hrana parovani
-                novi_partneri[aktualni] = predchudce
-                novi_partneri[predchudce] = aktualni
-            aktualni = predchudce
-            predchudce = naslednici
+    # for volne_tricko in volna_tricka: 
+    #     aktualni = volne_tricko
+    #     predchudce = naslednici[aktualni]
+    #     while predchudce != None:
+    #         if predchudce < lidi_celkem: # predchudce je clovek, takze toto bude nova hrana parovani
+    #             novi_partneri[aktualni] = predchudce
+    #             novi_partneri[predchudce] = aktualni
+    #         aktualni = predchudce
+    #         predchudce = naslednici
 
 
 
