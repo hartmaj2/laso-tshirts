@@ -39,13 +39,12 @@ def nacti_graf_a_partnery(lidi_celkem,tricek_celkem_pocet):
             sousede[vrchol_druheho_tricka].append(index_cloveka)
         sousede[index_cloveka].sort()
         
-def vypis_graf():
-    global sousede
+def vypis_graf(seznam_sousedu):
     i = 0
-    for i in range(len(sousede)):
+    for i in range(len(seznam_sousedu)):
         print(f"{i}:",end=" ")
-        for j in range(len(sousede[i])):
-            print(sousede[i][j], end=" ")
+        for j in range(len(seznam_sousedu[i])):
+            print(seznam_sousedu[i][j], end=" ")
         print()
     
 def vypis_seznam(seznam,text):
@@ -96,23 +95,22 @@ def vytvor_seznam_pridanych_do_noveho_parovani():
     return pridani
 
 # Slouzi k rekonstrukci zlepsujici cesty abych vedel, kudy vedla
-def vytvor_seznam_predchudcu():
-    predchudci = []
+def vytvor_seznam_nasledniku():
+    naslednici = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
-        predchudci.append(None)
-    return predchudci
+        naslednici.append([])
+    return naslednici
 
-def vytvor_alternujici_strom_predchudcu(partneri):
+def vytvor_alternujici_strom_nasledniku(partneri):
 
     navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
-    predchudci = vytvor_seznam_predchudcu()
+    naslednici = vytvor_seznam_nasledniku()
     volna_tricka = []
 
     fronta = deque()
     for volny in vrat_seznam_volnych():
         fronta.append(volny)
         navstiveni_v_bfs[volny] = True
-        predchudci[volny] = None
     
     #vypis_frontu(fronta)
     volny_nalezen = False # pokud jsme nasli cestu koncici volnym trickem, tak uz nepridavame dalsi vrcholy do fronty, ale jeste ji doprohlizime
@@ -123,7 +121,7 @@ def vytvor_alternujici_strom_predchudcu(partneri):
         # pro kazdeho souseda se koukneme, pokud po nem muzeme jit (tzn. ze uz neni v aktualnim parovani)
         for soused in sousede[aktualni]:
             if partneri[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
-                predchudci[soused] = aktualni # nastavim, ze jsem predchudce souseda na ktereho prave koukam
+                naslednici[aktualni].append(soused) # nastavim, ze jsem predchudce souseda na ktereho prave koukam
                 navstiveni_v_bfs[soused] = True
                 if partneri[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
                     volny_nalezen = True
@@ -131,18 +129,33 @@ def vytvor_alternujici_strom_predchudcu(partneri):
                 if not volny_nalezen:
                     fronta.append(soused)
 
-    return volna_tricka, predchudci
+    return volna_tricka, naslednici
 
-def vytvor_nova_parovani(volna_tricka, predchudci, partneri):
+def vytvor_nova_parovani(volna_tricka, naslednici, partneri):
     novi_partneri = vytvor_prazdne_partnery()
-    pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()()
+    pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()
+
+    #pristi_cesta_je_parova = True # alternuje mezi 
+
+    # pro kazde volne tricko chceme zkusit pridat celou jeho cestu do parovani
+    for volne_tricko in volna_tricka: 
+        aktualni = volne_tricko
+        predchudce = naslednici[aktualni]
+        while predchudce != None:
+            if predchudce < lidi_celkem: # predchudce je clovek, takze toto bude nova hrana parovani
+                novi_partneri[aktualni] = predchudce
+                novi_partneri[predchudce] = aktualni
+            aktualni = predchudce
+            predchudce = naslednici
 
 
 
 
 nacti_vstup()
-vypis_graf()
-volna_tricka, predchudci = vytvor_alternujici_strom_predchudcu(partneri)
+vypis_graf(sousede)
+print(f"Parovani: {partneri}")
+volna_tricka, naslednici = vytvor_alternujici_strom_nasledniku(partneri)
 print(f"Volna tricka: {volna_tricka}")
-print(f"Predchudci: {predchudci}")
+print("Naslednici:")
+vypis_graf(naslednici)
 
