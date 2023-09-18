@@ -101,6 +101,18 @@ def najdi_zlepsujici_cestu():
         fronta.append(volny)
     #vypis_frontu(fronta)
     volny_nalezen = False # pokud jsme nasli cestu koncici volnym trickem, tak uz nepridavame dalsi vrcholy do fronty, ale jeste ji doprohlizime
+    
+    # dokud fronta neni prazdna tak pomoci bfs hledam cesty do volnych tricek
+    while fronta.count() != 0:
+        aktualni = fronta.popleft()
+        
+        # pro kazdeho souseda se koukneme, pokud po nem muzeme jit (tzn. ze uz neni v aktualnim parovani)
+        for soused in sousede[aktualni]:
+            if partner[soused] == None: # tento soused neni v parovani a muzu tedy tuto hranu prozkoumat
+                
+
+
+
 
 
 nacti_vstup()
