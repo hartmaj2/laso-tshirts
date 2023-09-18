@@ -94,17 +94,26 @@ def vytvor_seznam_pridanych_do_noveho_parovani():
         pridani.append(False)
     return pridani
 
-# Slouzi k rekonstrukci zlepsujici cesty abych vedel, kudy vedla
+# Slouzi k rekonstrukci zlepsujici cesty abych vedel, kudy muze teoreticky vest
 def vytvor_seznam_nasledniku():
     naslednici = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         naslednici.append([])
     return naslednici
 
+# Po prohledani alternujiciho stromu nasledniku a nalezeni volneho tricka pomoci tohoto pole dotrackuju odkud jsem prisel
+def vytvor_seznam_predchudcu():
+    predchudci = []
+    for i in range(lidi_celkem + tricek_celkem_pocet):
+        predchudci.append(None)
+    return predchudci
+
+
 def vytvor_alternujici_strom_nasledniku(partneri):
 
     navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
     naslednici = vytvor_seznam_nasledniku()
+    predchudci = vytvor_seznam_predchudcu()
     volna_tricka = []
 
     fronta = deque()
@@ -122,6 +131,7 @@ def vytvor_alternujici_strom_nasledniku(partneri):
         for soused in sousede[aktualni]:
             if partneri[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
                 naslednici[aktualni].append(soused) # nastavim, ze jsem predchudce souseda na ktereho prave koukam
+                predchudci[soused] = aktualni
                 navstiveni_v_bfs[soused] = True
                 if partneri[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
                     volny_nalezen = True
@@ -129,7 +139,7 @@ def vytvor_alternujici_strom_nasledniku(partneri):
                 if not volny_nalezen:
                     fronta.append(soused)
 
-    return volna_tricka, naslednici
+    return volna_tricka, naslednici, predchudci
 
 def vytvor_nova_parovani(volna_tricka, naslednici, partneri):
     novi_partneri = vytvor_prazdne_partnery()
@@ -154,8 +164,9 @@ def vytvor_nova_parovani(volna_tricka, naslednici, partneri):
 nacti_vstup()
 vypis_graf(sousede)
 print(f"Parovani: {partneri}")
-volna_tricka, naslednici = vytvor_alternujici_strom_nasledniku(partneri)
+volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku(partneri)
 print(f"Volna tricka: {volna_tricka}")
+print(f"Predchudci: {predchudci}")
 print("Naslednici:")
 vypis_graf(naslednici)
 
