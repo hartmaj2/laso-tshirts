@@ -82,14 +82,20 @@ def vypis_frontu(fronta):
         print(prvek,end=" ")
     print()
 
-def vytvor_seznam_navstivenych():
+def vytvor_seznam_navstivenych_bfs():
     navstiveni = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         navstiveni.append(False)
 
+# Budu pouzivat k rekonstrukci zlepsujici cesty abych zadny vrchol nepridaval omylem dvakrat
+def vytvor_seznam_pridanych_do_zlepsujici_cesty():
+    pridani = []
+    for i in range(lidi_celkem + tricek_celkem_pocet):
+        pridani.append(False)
+
 def najdi_zlepsujici_cestu():
     global partner
-    navstiveni = vytvor_seznam_navstivenych()
+    navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
     fronta = deque()
     for volny in vrat_seznam_volnych():
         fronta.append(volny)
