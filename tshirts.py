@@ -81,7 +81,7 @@ def vypis_frontu(fronta):
         print(prvek,end=" ")
     print()
 
-def vytvor_seznam_navstivenych():
+def vytvor_seznam_false_booleanu():
     navstiveni = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         navstiveni.append(False)
