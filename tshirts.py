@@ -108,14 +108,26 @@ def vytvor_seznam_predchudcu():
         predchudci.append(None)
     return predchudci
 
+def je_to_index_cloveka(index):
+    if index < lidi_celkem:
+        return True
+    return False
+
 # Funguje jako dfs ale vrati true, kdyz se vracim z cesty, kde jsem nasel volne tricko
-# def dfs_se_signalem(vrchol, navstivene_dfs,volne_tricka):
-#     global sousede
-#     nasel_volne = volne_tricka[vrchol]
-#     navstivene_dfs[vrchol] = True
-#     for soused in soused[vrchol]:
-#         if not navstivene_dfs[soused]:
-#             if dfs_se_signalem(vrchol,navstivene_dfs):
+def dfs_se_signalem(vrchol, naslednici, volna_tricka, predchudci, nove_parovani):
+    global sousede
+    if len(naslednici) == 0: # nasel jsem koncovy vrchol stromu
+        if volna_tricka[vrchol]: # tento koncovy vrchol je volne tricko
+            nove_parovani[vrchol] = predchudci[vrchol]
+            nove_parovani[predchudci[vrchol]] = vrchol
+            return True
+        return False
+    for naslednik in naslednici[vrchol]:
+        if dfs_se_signalem(naslednik):
+            if not je_to_index_cloveka(vrchol):
+                nove_parovani[vrchol] = predchudci[vrchol] # tato hrana patri do parovani na zaklade toho, zda li vede z tricka nebo z cloveka
+                nove_parovani[predchudci[vrchol]] = vrchol
+            return True
 
 
 def vytvor_alternujici_strom_nasledniku(partneri):
@@ -158,7 +170,8 @@ def vytvor_alternujici_strom_nasledniku(partneri):
 #     novi_partneri = vytvor_prazdne_partnery()
 #     pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()
 
-#     #TODO z kazdeho volneho clovicka najit jednu zlepsujici cestu pokud to jde
+#     #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
+      #TODO potom stare parovani prepsat tim novym
 
 #     navstiveni_v_dfs = vytvor_seznam_false_booleanu()
 
