@@ -86,12 +86,14 @@ def vytvor_seznam_navstivenych_bfs():
     navstiveni = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         navstiveni.append(False)
+    return navstiveni
 
 # Budu pouzivat k rekonstrukci zlepsujici cesty abych zadny vrchol nepridaval omylem dvakrat
 def vytvor_seznam_pridanych_do_zlepsujici_cesty():
     pridani = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         pridani.append(False)
+    return pridani
 
 def najdi_zlepsujici_cestu():
     global partner
