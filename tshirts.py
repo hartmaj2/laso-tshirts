@@ -102,7 +102,7 @@ def vytvor_seznam_predchudcu():
         predchudci.append(None)
     return predchudci
 
-def najdi_zlepsujici_cestu():
+def vytvor_alternujici_strom_predchudcu():
     global partner
 
     navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
@@ -132,9 +132,10 @@ def najdi_zlepsujici_cestu():
                 if not volny_nalezen:
                     fronta.append(soused)
 
-    print(f"Volna tricka: {volna_tricka}")       
+    print(f"Volna tricka: {volna_tricka}")
+
 
 nacti_vstup()
 vypis_graf()
-najdi_zlepsujici_cestu()
+vytvor_alternujici_strom_predchudcu()
 
