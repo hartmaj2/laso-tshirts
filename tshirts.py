@@ -102,7 +102,7 @@ vypis_graf()
 vypis_seznam(partner,"Partnery")
 print(existuje_clovek_bez_partnera())
 volni = vrat_seznam_volnych()
-vypis_seznam(volni,"Volnasci")
+vypis_seznam(volni,"Volni")
 vypis_seznam(vytvor_prazdne_partnery(),"Prazdni")
 najdi_zlepsujici_cestu()
 
