@@ -95,6 +95,13 @@ def vytvor_seznam_pridanych_do_zlepsujici_cesty():
         pridani.append(False)
     return pridani
 
+# Slouzi k rekonstrukci zlepsujici cesty abych vedel, kudy vedla
+def vytvor_seznam_predchudcu():
+    predchudci = []
+    for i in range(lidi_celkem + tricek_celkem_pocet):
+        predchudci.append(None)
+    return predchudci
+
 def najdi_zlepsujici_cestu():
     global partner
     navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
