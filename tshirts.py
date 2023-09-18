@@ -8,7 +8,7 @@ velikost_to_index = {"XS" : 0, "S" : 1, "M" : 2, "L" : 3, "XL" : 4, "XXL" : 5} #
 tricek_celkem_pocet = 0
 lidi_celkem = 0
 
-partner = [] # reprezentuje hrany naseho parovani, je indexovano vrcholy
+partneri = [] # reprezentuje hrany naseho parovani, je indexovano vrcholy
 
 def nacti_vstup():
     global tricek_celkem_pocet, lidi_celkem
@@ -21,7 +21,7 @@ def nacti_graf_a_partnery(lidi_celkem,tricek_celkem_pocet):
     jeden_druh_pocet = tricek_celkem_pocet // len(index_to_velikost)
     for index_vrcholu in range(lidi_celkem + tricek_celkem_pocet):
         sousede.append([])
-        partner.append(None)
+        partneri.append(None)
     for index_cloveka in range(lidi_celkem):
         prvni_velikost, druha_velikost = [x for x in sys.stdin.readline().split()]
         #print(f"Prvni velikost: {prvni_velikost} Druha velikost: {druha_velikost}")
@@ -57,7 +57,7 @@ def vypis_seznam(seznam,text):
 def existuje_clovek_bez_partnera():
     global lidi_celkem
     for index_cloveka in range(lidi_celkem):
-        if partner[index_cloveka] == None:
+        if partneri[index_cloveka] == None:
             return True
     return False
 
@@ -65,14 +65,14 @@ def vrat_seznam_volnych():
     global lidi_celkem
     volni = []
     for index_cloveka in range(lidi_celkem):
-        if partner[index_cloveka] == None:
+        if partneri[index_cloveka] == None:
             volni.append(index_cloveka)
     return volni
 
 def vytvor_prazdne_partnery():
-    global partner
+    global partneri
     novi_partneri = []
-    for i in range(len(partner)):
+    for i in range(len(partneri)):
         novi_partneri.append(None)
     return novi_partneri
 
@@ -89,7 +89,7 @@ def vytvor_seznam_navstivenych_bfs():
     return navstiveni
 
 # Budu pouzivat k rekonstrukci zlepsujici cesty abych zadny vrchol nepridaval omylem dvakrat
-def vytvor_seznam_pridanych_do_zlepsujici_cesty():
+def vytvor_seznam_pridanych_do_noveho_parovani():
     pridani = []
     for i in range(lidi_celkem + tricek_celkem_pocet):
         pridani.append(False)
@@ -102,8 +102,7 @@ def vytvor_seznam_predchudcu():
         predchudci.append(None)
     return predchudci
 
-def vytvor_alternujici_strom_predchudcu():
-    global partner
+def vytvor_alternujici_strom_predchudcu(partneri):
 
     navstiveni_v_bfs = vytvor_seznam_navstivenych_bfs()
     predchudci = vytvor_seznam_predchudcu()
@@ -123,19 +122,27 @@ def vytvor_alternujici_strom_predchudcu():
         aktualni = fronta.popleft()  
         # pro kazdeho souseda se koukneme, pokud po nem muzeme jit (tzn. ze uz neni v aktualnim parovani)
         for soused in sousede[aktualni]:
-            if partner[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
+            if partneri[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
                 predchudci[soused] = aktualni # nastavim, ze jsem predchudce souseda na ktereho prave koukam
                 navstiveni_v_bfs[soused] = True
-                if partner[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
+                if partneri[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
                     volny_nalezen = True
                     volna_tricka.append(soused)
                 if not volny_nalezen:
                     fronta.append(soused)
 
-    print(f"Volna tricka: {volna_tricka}")
+    return volna_tricka, predchudci
+
+def vytvor_nova_parovani(volna_tricka, predchudci, partneri):
+    novi_partneri = vytvor_prazdne_partnery()
+    pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()()
+
+
 
 
 nacti_vstup()
 vypis_graf()
-vytvor_alternujici_strom_predchudcu()
+volna_tricka, predchudci = vytvor_alternujici_strom_predchudcu(partneri)
+print(f"Volna tricka: {volna_tricka}")
+print(f"Predchudci: {predchudci}")
 
