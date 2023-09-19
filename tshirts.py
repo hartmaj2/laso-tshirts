@@ -183,10 +183,13 @@ def vytvor_nova_parovani(volna_tricka, naslednici, predchudci):
 def najdi_uplne_parovani():
     global partneri
     nacti_vstup()
-    while existuje_clovek_bez_partnera():
+    pocitadlo = 0
+    while existuje_clovek_bez_partnera() and pocitadlo < 10:
         volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
         partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
         print(f"Nove parovani: {partneri}")
+        pocitadlo += 1
+        
 
 
 vypis_graf(sousede)
