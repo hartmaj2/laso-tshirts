@@ -114,20 +114,20 @@ def je_to_index_cloveka(index):
     return False
 
 # Funguje jako dfs ale vrati true, kdyz se vracim z cesty, kde jsem nasel volne tricko
-def dfs_se_signalem(vrchol, naslednici, volna_tricka, predchudci, nove_parovani):
-    global sousede
+def dfs_se_signalem(vrchol, naslednici, volna_tricka, predchudci):
+    global sousede,partneri
 
     if len(naslednici[vrchol]) == 0: # nasel jsem koncovy vrchol stromu 
         if volna_tricka[vrchol]: # tento koncovy vrchol je volne tricko
-            nove_parovani[vrchol] = predchudci[vrchol]
-            nove_parovani[predchudci[vrchol]] = vrchol
+            partneri[vrchol] = predchudci[vrchol]
+            partneri[predchudci[vrchol]] = vrchol
             return True
         return False
     for naslednik in naslednici[vrchol]:
-        if dfs_se_signalem(naslednik,naslednici,volna_tricka,predchudci,nove_parovani):
+        if dfs_se_signalem(naslednik,naslednici,volna_tricka,predchudci):
             if not je_to_index_cloveka(vrchol):
-                nove_parovani[vrchol] = predchudci[vrchol] # tato hrana patri do parovani na zaklade toho, zda li vede z tricka nebo z cloveka
-                nove_parovani[predchudci[vrchol]] = vrchol
+                partneri[vrchol] = predchudci[vrchol] # tato hrana patri do parovani na zaklade toho, zda li vede z tricka nebo z cloveka
+                partneri[predchudci[vrchol]] = vrchol
             return True
 
 def vytvor_alternujici_strom_nasledniku():
@@ -174,36 +174,33 @@ def vytvor_alternujici_strom_nasledniku():
     for index_volneho in indexy_volnych_tricek:
         volna_tricka[index_volneho] = True
 
-    return volna_tricka, naslednici, predchudci
+    return volna_tricka, naslednici, predchudci, volne_tricko_nalezeno
 
 def vytvor_nova_parovani(volna_tricka, naslednici, predchudci):
 
-    novi_partneri = vytvor_prazdne_partnery()
-    
-    #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
-    #TODO potom stare parovani prepsat tim novym
+    global partneri
 
     for volny_clovek in vrat_seznam_volnych():
-        dfs_se_signalem(volny_clovek,naslednici,volna_tricka,predchudci,novi_partneri)
+        dfs_se_signalem(volny_clovek,naslednici,volna_tricka,predchudci)
     
-    return novi_partneri
-
 def najdi_uplne_parovani():
     global partneri
     nacti_vstup()
     pocitadlo = 0
     while existuje_clovek_bez_partnera() and pocitadlo < 5:
-        volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
-        print(f"Naslednici po vytvoreni stromu: {naslednici}")
-        partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
-        print(f"Nove parovani: {partneri}")
+        volna_tricka, naslednici, predchudci, volne_tricko_nalezeno = vytvor_alternujici_strom_nasledniku()
+        if not volne_tricko_nalezeno:
+            break
+        vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
         pocitadlo += 1
+    
+    if existuje_clovek_bez_partnera():
+        print("Nenalezl jsem parovani")
+    else:
+        print("Nalezl jsem parovani")
+        print(f"Parovani: {partneri}")
         
-
-
 vypis_graf(sousede)
-print(f"Parovani: {partneri}")
 najdi_uplne_parovani()
 
-print(f"Nove parovani: {partneri}")
 
