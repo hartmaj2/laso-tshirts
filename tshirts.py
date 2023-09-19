@@ -129,8 +129,9 @@ def dfs_se_signalem(vrchol, naslednici, volna_tricka, predchudci, nove_parovani)
                 nove_parovani[predchudci[vrchol]] = vrchol
             return True
 
+def vytvor_alternujici_strom_nasledniku():
 
-def vytvor_alternujici_strom_nasledniku(partneri):
+    global partneri
 
     navstiveni_v_bfs = vytvor_seznam_false_booleanu()
     naslednici = vytvor_seznam_nasledniku()
@@ -166,30 +167,20 @@ def vytvor_alternujici_strom_nasledniku(partneri):
 
     return volna_tricka, naslednici, predchudci
 
-# def vytvor_nova_parovani(volna_tricka, naslednici, predchudci, partneri):
-#     novi_partneri = vytvor_prazdne_partnery()
-#     pridani_do_parovani = vytvor_seznam_pridanych_do_noveho_parovani()
+def vytvor_nova_parovani(volna_tricka, naslednici, predchudci):
 
-#     #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
-      #TODO potom stare parovani prepsat tim novym
+    global partneri
 
-#     navstiveni_v_dfs = vytvor_seznam_false_booleanu()
+    novi_partneri = vytvor_prazdne_partnery()
+    
+    #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
+    #TODO potom stare parovani prepsat tim novym
 
-#     for volny in vrat_seznam_volnych():
+    for volny_clovek in vrat_seznam_volnych():
+        dfs_se_signalem(volny_clovek,naslednici,volna_tricka,predchudci,novi_partneri)
+    
+    
 
-
-    #pristi_cesta_je_parova = True # alternuje mezi 
-
-    # pro kazde volne tricko chceme zkusit pridat celou jeho cestu do parovani
-    # for volne_tricko in volna_tricka: 
-    #     aktualni = volne_tricko
-    #     predchudce = naslednici[aktualni]
-    #     while predchudce != None:
-    #         if predchudce < lidi_celkem: # predchudce je clovek, takze toto bude nova hrana parovani
-    #             novi_partneri[aktualni] = predchudce
-    #             novi_partneri[predchudce] = aktualni
-    #         aktualni = predchudce
-    #         predchudce = naslednici
 
 
 
