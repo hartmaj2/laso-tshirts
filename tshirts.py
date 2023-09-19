@@ -175,17 +175,23 @@ def vytvor_nova_parovani(volna_tricka, naslednici, predchudci):
     #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
     #TODO potom stare parovani prepsat tim novym
 
-    print(f"Volna tricka pred tvorbou parovani: {volna_tricka}")
-
     for volny_clovek in vrat_seznam_volnych():
         dfs_se_signalem(volny_clovek,naslednici,volna_tricka,predchudci,novi_partneri)
     
     return novi_partneri
-    
-nacti_vstup()
+
+def najdi_uplne_parovani():
+    global partneri
+    nacti_vstup()
+    while existuje_clovek_bez_partnera():
+        volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
+        partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
+        print(f"Nove parovani: {partneri}")
+
+
 vypis_graf(sousede)
 print(f"Parovani: {partneri}")
-volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
-partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
+najdi_uplne_parovani()
+
 print(f"Nove parovani: {partneri}")
 
