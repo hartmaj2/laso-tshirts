@@ -145,23 +145,31 @@ def vytvor_alternujici_strom_nasledniku():
         navstiveni_v_bfs[volny] = True
     
     #vypis_frontu(fronta)
-    volny_nalezen = False # pokud jsme nasli cestu koncici volnym trickem, tak uz nepridavame dalsi vrcholy do fronty, ale jeste ji doprohlizime
+    volne_tricko_nalezeno = False # pokud jsme nasli cestu koncici volnym trickem, tak uz nepridavame dalsi vrcholy do fronty, ale jeste ji doprohlizime
     
     # dokud fronta neni prazdna tak pomoci bfs hledam cesty do volnych tricek
     while len(fronta) != 0:
         aktualni = fronta.popleft()  
         # pro kazdeho souseda se koukneme, pokud po nem muzeme jit (tzn. ze uz neni v aktualnim parovani)
+        # JE POTREBA ROZLISIT Z JAKE JDU STRANY, TZN. JDE O INDEX CLOVEKA NEBO TRICKA
         for soused in sousede[aktualni]:
-            if partneri[soused] != aktualni and not navstiveni_v_bfs[soused]: # tento soused neni v parovani se mnou a jeste jsem ho nenavstivil, takze muzu tedy tuto hranu prozkoumat
-                naslednici[aktualni].append(soused) # nastavim, ze jsem predchudce souseda na ktereho prave koukam
-                predchudci[soused] = aktualni
-                navstiveni_v_bfs[soused] = True
-                if partneri[soused] == None: # nasel jsem volne tricko (jeste neni sparovano s clovekem)
-                    volny_nalezen = True
-                    indexy_volnych_tricek.append(soused)
-                if not volny_nalezen:
-                    fronta.append(soused)
-
+            if je_to_index_cloveka(aktualni):
+                # pokud soused nema parovani se mnou, tak se koukam na hranu, ktera neni z parovani
+                if partneri[soused] != aktualni and not navstiveni_v_bfs[soused]: # zaroven nechci jit do vrcholu jiz prohledaneho
+                    naslednici[aktualni].append(soused)
+                    predchudci[soused] = aktualni
+                    navstiveni_v_bfs[soused] = True
+                    if partneri[soused] == None: # jde o volny vrchol na strane tricek
+                        volne_tricko_nalezeno = True
+                        indexy_volnych_tricek.append(soused)
+                    if not volne_tricko_nalezeno:
+                        fronta.append(soused)
+            else: #prohledavam z tricka a chci tedy jit po parove hrane
+                if partneri[soused] == aktualni and not navstiveni_v_bfs[soused]:
+                    naslednici[aktualni].append(soused)
+                    predchudci[soused] = aktualni
+                    navstiveni_v_bfs[soused] = True
+                
     volna_tricka = vytvor_seznam_false_booleanu()
     for index_volneho in indexy_volnych_tricek:
         volna_tricka[index_volneho] = True
@@ -184,8 +192,9 @@ def najdi_uplne_parovani():
     global partneri
     nacti_vstup()
     pocitadlo = 0
-    while existuje_clovek_bez_partnera() and pocitadlo < 10:
+    while existuje_clovek_bez_partnera() and pocitadlo < 5:
         volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
+        print(f"Naslednici po vytvoreni stromu: {naslednici}")
         partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
         print(f"Nove parovani: {partneri}")
         pocitadlo += 1
