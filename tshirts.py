@@ -116,14 +116,15 @@ def je_to_index_cloveka(index):
 # Funguje jako dfs ale vrati true, kdyz se vracim z cesty, kde jsem nasel volne tricko
 def dfs_se_signalem(vrchol, naslednici, volna_tricka, predchudci, nove_parovani):
     global sousede
-    if len(naslednici) == 0: # nasel jsem koncovy vrchol stromu
+
+    if len(naslednici[vrchol]) == 0: # nasel jsem koncovy vrchol stromu 
         if volna_tricka[vrchol]: # tento koncovy vrchol je volne tricko
             nove_parovani[vrchol] = predchudci[vrchol]
             nove_parovani[predchudci[vrchol]] = vrchol
             return True
         return False
     for naslednik in naslednici[vrchol]:
-        if dfs_se_signalem(naslednik):
+        if dfs_se_signalem(naslednik,naslednici,volna_tricka,predchudci,nove_parovani):
             if not je_to_index_cloveka(vrchol):
                 nove_parovani[vrchol] = predchudci[vrchol] # tato hrana patri do parovani na zaklade toho, zda li vede z tricka nebo z cloveka
                 nove_parovani[predchudci[vrchol]] = vrchol
@@ -169,28 +170,22 @@ def vytvor_alternujici_strom_nasledniku():
 
 def vytvor_nova_parovani(volna_tricka, naslednici, predchudci):
 
-    global partneri
-
     novi_partneri = vytvor_prazdne_partnery()
     
     #TODO z kazdeho volneho clovicka najit zlepsujici cestu a aktualizovat podle ni nove_parovani
     #TODO potom stare parovani prepsat tim novym
 
+    print(f"Volna tricka pred tvorbou parovani: {volna_tricka}")
+
     for volny_clovek in vrat_seznam_volnych():
         dfs_se_signalem(volny_clovek,naslednici,volna_tricka,predchudci,novi_partneri)
     
+    return novi_partneri
     
-
-
-
-
-
 nacti_vstup()
 vypis_graf(sousede)
 print(f"Parovani: {partneri}")
-volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku(partneri)
-print(f"Volna tricka: {volna_tricka}")
-print(f"Predchudci: {predchudci}")
-print("Naslednici:")
-vypis_graf(naslednici)
+volna_tricka, naslednici, predchudci = vytvor_alternujici_strom_nasledniku()
+partneri = vytvor_nova_parovani(volna_tricka, naslednici, predchudci)
+print(f"Nove parovani: {partneri}")
 
